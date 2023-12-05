@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your D3 Project</title>
-    <!-- Include your JavaScript file with type="module" -->
-    <script type="module" src="./connected-scatterplot.js" defer></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./connected-scatterplot.js" defer></script>
 </head>
 <body>
-    <!-- Add this button inside the <body> tag of index.html -->
     <button onclick="openOverview()">Open Overview</button>
+    <input type="file" id="fileInput" accept=".csv">
+    <div id="chart"></div>
 
     <script>
-        // Add a function to open overview.html in a new tab
         function openOverview() {
             window.open('overview.html', '_blank');
         }
     </script>
-
-    <!-- Your content goes here -->
 </body>
 </html>
