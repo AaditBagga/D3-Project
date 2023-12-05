@@ -50,6 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .x(d => x(d.miles))
             .y(d => y(d.gas));
 
+        // Function to create a tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "absolute")
+            .style("text-align", "center")
+            .style("width", "120px")
+            .style("height", "42px")
+            .style("padding", "2px")
+            .style("font", "12px sans-serif")
+            .style("background", "lightsteelblue")
+            .style("border", "0px")
+            .style("border-radius", "8px")
+            .style("pointer-events", "none");
+
         // Apply the zoom behavior to the svg.
         svg.call(zoom);
 
@@ -60,6 +75,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         svg.on("dblclick.zoom", resetZoom);
+
+        // Function to handle mouseover event
+        function mouseover(event, d) {
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            tooltip.html("Year: " + d.year + "<br/>Miles: " + d.miles + "<br/>Cost: $" + d.gas)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            }
+
+        // Function to handle mouseout event
+        function mouseout() {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        }
 
         // Function that updates the chart when zoomed.
         function zoomed(event) {
@@ -88,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("class", "line")
             .attr("d", line);
 
-        // Draw the points.
+        // Add the points and the events for tooltip display
         g.selectAll("circle")
             .data(data)
             .join("circle")
@@ -97,7 +129,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("stroke-width", 2)
             .attr("cx", d => x(d.miles))
             .attr("cy", d => y(d.gas))
-            .attr("r", 3);
+            .attr("r", 3)
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+
 
         // Draw the labels.
         g.selectAll(".label")
