@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Flow - Call</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+</head>
+<body>
+    <h1>Control Flow - Call</h1>
+    <p>Author: <span>Aadit Bagga</span></p>
+    <p id="date"></p>
+
+    <script type="module">
+        document.getElementById("date").innerHTML = Date();
+        // Declare the chart dimensions and margins.
+        const width = 640;
+        const height = 400;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        // Declare the x (horizontal position) scale.
+        const x = d3.scaleUtc()
+            .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+            .range([marginLeft, width - marginRight]);
+
+        // Declare the y (vertical position) scale.
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height - marginBottom, marginTop]);
+
+        // Create the SVG container.
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add the x-axis.
+        const xAxisGroup = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`);
+        d3.axisBottom(x)(xAxisGroup);
+
+        // Add the y-axis.
+        const yAxisGroup = svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`);
+        d3.axisLeft(y)(yAxisGroup);
+
+        // Append the SVG element.
+        document.body.appendChild(svg.node());
+            
+    </script>
+</body>
+</html>

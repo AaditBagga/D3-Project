@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3Play2</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+</head>
+
+<body>
+
+    <script type="module">
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", 960)
+            .attr("height", 600);
+
+        const rect = svg.append("g")
+            .attr("transform", "translate(20,20)")
+            .append("rect")
+            .attr("width", 500) // Resize width to 500
+            .attr("height", 500) // Resize height to 500
+            .attr("y", 50) // Position the rectangle a bit lower to leave space on top
+            .attr("fill", "red") // Set fill color to red
+            .attr("stroke-width", 50) // Set stroke-width to 50
+            .attr("stroke", "green"); // Set stroke color to green
+
+        rect.on("click", function(event) {
+            // Change the rectangle color to blue on click
+            d3.select(this).attr("fill", "blue");
+
+
+            svg.append("circle")
+                .attr("cx", 0+10)
+                .attr("cy", 0+10)
+                .attr("r", 10) 
+                .attr("fill", "black"); 
+        });
+    </script>
+
+</body>
+
+</html>

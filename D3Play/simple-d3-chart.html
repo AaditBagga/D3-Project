@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple D3 Chart</title>
+</head>
+
+<body>
+
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <h1>Simple D3 Chart</h1>
+    <p>Author: <span>Aadit Bagga</span></p>
+    <p id="date"></p>
+    <div id="container"></div>
+    <script type="module">
+        document.getElementById("date").innerHTML = Date();
+
+        // Declare the chart dimensions and margins.
+        const width = 640;
+        const height = 400;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        // Declare the x (horizontal position) scale.
+        const x = d3.scaleUtc()
+            .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+            .range([marginLeft, width - marginRight]);
+
+        // Declare the y (vertical position) scale.
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height - marginBottom, marginTop]);
+
+        // Generate an array with 500 elements.
+        const data = Array.from({ length: 500 }, () => ({
+            x: Math.random() * (new Date("2024-01-01").getTime() - new Date("2023-01-01").getTime()) + new Date("2023-01-01").getTime(),
+            y: Math.random() * 100
+        }));
+
+
+        // Create the SVG container.
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add the x-axis.
+        const xAxis = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x));
+
+        // Add the y-axis.
+        const yAxis = svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y));
+
+        // Modify the x-axis tick marks to be red with a stroke-width of 5
+        xAxis.selectAll(".tick line")
+            .attr("stroke", "red")
+            .attr("stroke-width", 5);
+
+        // Modify the y-axis tick marks to be blue with a stroke-width of 5
+        yAxis.selectAll(".tick line")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 5);
+
+        // Modify the x-axis number marks to be green
+        xAxis.selectAll(".tick text")
+            .attr("fill", "green");
+
+        // Modify the y-axis number marks to be magenta
+        yAxis.selectAll(".tick text")
+            .attr("fill", "magenta");
+
+        // Use D3 join operation to append circles to represent the data points.
+        const circles = svg.selectAll("circle")
+            .data(data);
+
+        circles.enter()
+            .append("circle")
+            .attr("cx", d => x(d.x))
+            .attr("cy", d => y(d.y))
+            .attr("r", 4)
+            .attr("fill", "steelblue"); 
+
+
+        // Append the SVG element.
+        document.getElementById("container").appendChild(svg.node());
+
+    </script>
+
+</body>
+
+</html>

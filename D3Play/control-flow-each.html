@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Flow - Each</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <style>
+        td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Control Flow - Each</h1>
+    <p>Author: <span>Aadit Bagga</span></p>
+    <p id="date"></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>H1</th>
+                <th>H2</th>
+                <th>H3</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.getElementById("date").innerHTML = Date();
+
+        const columns = ["column 1", "column 2", "column 3"];
+        const rows = ["row 1", "row 2", "row 3"];
+
+        const table = d3.select('table');
+
+        const tableRows = table.select('tbody')
+            .selectAll('tr')
+            .data(rows)
+            .join('tr');
+
+        tableRows.each(function (rowData, rowIndex) {
+            d3.select(this)
+                .selectAll('td')
+                .data(columns)
+                .join('td')
+                .html(function (columnData, columnIndex) {
+                    return `<div>${rowData}.${columnData}</div>`;
+                });
+        });
+    </script>
+</body>
+
+</html>

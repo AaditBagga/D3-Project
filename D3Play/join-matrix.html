@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Matrix</title>
+</head>
+<body>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <h1>Join Matrix</h1>
+    <p>Author: <span>Aadit Bagga</span></p>
+    <p id="date"></p>
+    <script>
+        document.getElementById("date").innerHTML = Date();
+
+        const matrix = [
+            [11975,  5871, 8916, 2868],
+            [ 1951, 10048, 2060, 6171],
+            [ 8010, 16145, 8090, 8045],
+            [ 1013,   990,  940, 6907]
+        ];
+
+        let ret = d3.select("body")
+            .append("table")
+            .selectAll("tr")
+            .data(matrix)
+            .join("tr")
+            .selectAll("td")
+            .data(d => d)
+            .join("td")
+            .text(d => d);
+
+        console.log("ret:",ret);
+    </script>
+    
+</body>
+</html>

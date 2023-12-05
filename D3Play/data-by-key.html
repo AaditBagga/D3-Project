@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data by key</title>
+</head>
+<body>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <h1 align="center">Data by key</h1>
+    <p align="center">Author: <span>Aadit Bagga</span></p>
+    <p align="center", id="date"></p>
+    <div id="Ford"></div>
+    <div id="Jarrah"></div>
+    <div id="Kwon"></div>
+    <div id="Locke"></div>
+    <div id="Reyes"></div>
+    <div id="Shephard"></div>
+    <h2 align="center">CSV Table</h2>
+    <div id="table-container"></div>
+    <script>
+        document.getElementById("date").innerHTML = Date();
+        const data = [
+            {name: "Locke", number: 4},
+            {name: "Reyes", number: 8},
+            {name: "Ford", number: 15},
+            {name: "Jarrah", number: 16},
+            {name: "Shephard", number: 23},
+            {name: "Kwon", number: 42}
+        ];
+
+        d3.selectAll("div")
+            .data(data, function(d) { return d ? d.name : this.id; })
+            .text((d, i) => `[${i}] ${d.number} ${d.name}`);
+
+        d3.csv("data-by-key.csv").then(csvData => {
+            const tableContainer = d3.select("#table-container");
+
+            const table = tableContainer.append("table");
+            const tbody = table.append("tbody");
+
+            // Extract column names
+            const columns = Object.keys(csvData[0]);
+
+            // Append the data rows
+            const rows = tbody.selectAll("tr")
+                .data(csvData)
+                .join("tr");
+
+            // Append index column only once for each row
+            rows.append("td")
+                .text((d, i) => `[${i}]`);
+
+            // Append other columns
+            rows.selectAll("td.data")
+                .data(d => columns.map(col => d[col]))
+                .join("td")
+                .attr("class", "data")
+                .text(d => d);
+        });
+
+
+    </script>
+
+    
+</body>
+</html>
