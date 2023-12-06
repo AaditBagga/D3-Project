@@ -47,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
         endYearLabel.text(endYearInput.property('value'));
     }
 
+    const legendData = [
+        { color: "green", description: "Both Increased" },
+        { color: "red", description: "Both Decreased" },
+        { color: "blue", description: "Miles Increased, Gas Decreased" },
+        { color: "orange", description: "Miles Decreased, Gas Increased" },
+        { color: "grey", description: "No Significant Change" }
+    ];    
+
     function updateHighlight(data, startYear, endYear) {
         const highlightedData = data.filter(d => d.year >= startYear && d.year <= endYear);
         highlightLine
@@ -55,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getColor(data, index) {
-        if (index === 0) return "black"; // Default color for the first point
+        if (index === 0) return "grey"; // Default color for the first point
     
         const deltaMiles = data[index].miles - data[index - 1].miles;
         const deltaGas = data[index].gas - data[index - 1].gas;
@@ -77,6 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
         svg = d3.select("#chart").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom);
+
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${width - 250},${20})`); 
 
         const g = svg.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -172,6 +184,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 t.attr("text-anchor", getAnchor(d.side))
                  .attr("dx", getDx(d.side))
                  .attr("dy", getDy(d.side));
+            });
+
+        // Add legend entries
+        legend.selectAll("legend-entries")
+            .data(legendData)
+            .enter()
+            .append("g")
+            .attr("class", "legend-entry")
+            .each(function(d, i) {
+                const g = d3.select(this);
+                g.append("rect")
+                    .attr("x", 0)
+                    .attr("y", i * 25)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .attr("fill", d.color);
+
+                g.append("text")
+                    .attr("x", 30)
+                    .attr("y", i * 25 + 15)
+                    .attr("text-anchor", "start")
+                    .text(d.description)
+                    .attr("font-size", "12px");
             });
 
         g.selectAll(".label")
