@@ -54,6 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("d", line);
     }
 
+    function getColor(data, index) {
+        if (index === 0) return "black"; // Default color for the first point
+    
+        const deltaMiles = data[index].miles - data[index - 1].miles;
+        const deltaGas = data[index].gas - data[index - 1].gas;
+    
+        // Example color coding (you can modify this logic based on your color mapping strategy)
+        if (deltaMiles > 0 && deltaGas > 0) return "green"; // Both increased
+        if (deltaMiles < 0 && deltaGas < 0) return "red";   // Both decreased
+        if (deltaMiles > 0 && deltaGas < 0) return "blue";  // Miles increased, Gas decreased
+        if (deltaMiles < 0 && deltaGas > 0) return "orange";// Miles decreased, Gas increased
+        return "grey"; // No significant change
+    }
+    
+
     function initializeChart(data) {
         const margin = { top: 20, right: 30, bottom: 30, left: 40 },
               width = 928 - margin.left - margin.right,
@@ -133,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
         g.selectAll("circle")
             .data(data)
             .join("circle")
-            .attr("fill", "white")
+            .attr("fill", (d, i) => getColor(data, i))
             .attr("stroke", "black")
             .attr("stroke-width", 2)
             .attr("cx", d => x(d.miles))
