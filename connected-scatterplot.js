@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let svg, x, y, xAxis, yAxis, line, tooltip, isDrivingData, dataFields;
+    let svg, x, y, xAxis, yAxis, line, tooltip, isDrivingData, dataFields, colorScale;
+    let width = 928, height = 720;
 
     function handleFileSelect(evt) {
         const file = evt.target.files[0];
@@ -10,12 +11,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = d3.csvParse(text, d3.autoType);
                 isDrivingData = data[0].hasOwnProperty('miles') && data[0].hasOwnProperty('gas');
                 dataFields = isDrivingData ? { x: 'miles', y: 'gas', label: 'year' } : { x: 'Revenue', y: 'Expenses', label: 'Year' };
+                setupDropdowns(data);
                 initializeChart(data);
             };
             reader.readAsText(file);
         }
     }
 
+    function setupDropdowns(data) {
+        const dimensionKeys = Object.keys(data[0]);
+        const nonTemporalDimensions = dimensionKeys.filter(key => key !== 'year');
+
+        populateDropdown('x-axis-select', nonTemporalDimensions);
+        populateDropdown('y-axis-select', nonTemporalDimensions);
+        populateDropdown('hue-select', nonTemporalDimensions);
+        populateDropdown('chroma-select', nonTemporalDimensions);
+
+        ['x-axis-select', 'y-axis-select', 'hue-select', 'chroma-select'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => updateChart(data));
+        });
+    }
+
+    function populateDropdown(dropdownId, options) {
+        const select = document.getElementById(dropdownId);
+        select.innerHTML = options.map(option => `<option value="${option}">${option}</option>`).join('');
+    }
+
+    function updateChart(data) {
+        const xAxisValue = document.getElementById('x-axis-select').value;
+        const yAxisValue = document.getElementById('y-axis-select').value;
+        const hueValue = document.getElementById('hue-select').value;
+        const chromaValue = document.getElementById('chroma-select').value;
+
+        // Update scales
+        x.domain(d3.extent(data, d => d[xAxisValue])).nice();
+        y.domain(d3.extent(data, d => d[yAxisValue])).nice();
+        colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+        // Update axes
+        xAxis.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+        yAxis.call(d3.axisLeft(y));
+
+        // Update line
+        line.x(d => x(d[xAxisValue])).y(d => y(d[yAxisValue]));
+        svg.select('.line').attr('d', line);
+
+        // Update circles
+        svg.selectAll('circle')
+            .data(data)
+            .join('circle')
+            .attr('cx', d => x(d[xAxisValue]))
+            .attr('cy', d => y(d[yAxisValue]))
+            .attr('fill', d => colorScale(d[hueValue]))
+            .attr('r', 3);
+
+        // Update labels
+        svg.selectAll('.label')
+            .data(data)
+            .join('text')
+            .attr('x', d => x(d[xAxisValue]) + 10)
+            .attr('y', d => y(d[yAxisValue]))
+            .text(d => d['year']); 
+    }
 
     function getColor(data, index) {
         if (index === 0) return "grey"; 
@@ -134,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .text(isDrivingData ? "Cost per gallon" : "Expenses (millions)");
         
         addLegend(isDrivingData, width);
+        updateChart(data);
 
     }
 

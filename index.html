@@ -11,7 +11,20 @@
     <button onclick="openOverview()">Open Overview</button>
     <input type="file" id="fileInput" accept=".csv">
 
+    <!-- Dropdown menus for selecting dimensions -->
+    <div>
+        <label for="x-axis-select">X-Axis:</label>
+        <select id="x-axis-select"></select>
 
+        <label for="y-axis-select">Y-Axis:</label>
+        <select id="y-axis-select"></select>
+
+        <label for="hue-select">Hue:</label>
+        <select id="hue-select"></select>
+
+        <label for="chroma-select">Chroma/Lightness:</label>
+        <select id="chroma-select"></select>
+    </div>
 
     <div id="chart"></div>
 
